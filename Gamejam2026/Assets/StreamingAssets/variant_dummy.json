@@ -1,0 +1,26 @@
+[
+    {
+        "visibilityState": "WithBottomLayer",
+        "evaluationLogic": "A",
+        "components": [
+            { "label": "Component 1" },
+            { "label": "Component 2" },
+            { "label": "Component 3" },
+            { "label": "Component 4" },
+            { "label": "Component 5" },
+            { "label": "Component 6" }
+        ]
+    },
+    {
+        "visibilityState": "WithoutBottomLayer",
+        "evaluationLogic": "B",
+        "components": [
+            { "label": "Component 7" },
+            { "label": "Component 8" },
+            { "label": "Component 9" },
+            { "label": "Component 10" },
+            { "label": "Component 11" },
+            { "label": "Component 12" }
+        ]
+    }
+]

@@ -1,18 +1,15 @@
+using System.Collections;
 using UnityEngine;
 
 public class SplashScreen : MonoBehaviour
 {
     [SerializeField] private GameObject mainControllerPrefab;
-    
+
     private static GameObject mainControllerInstance;
 
     private void Awake()
     {
-        // Prevent duplicates if the splash scene is somehow loaded again
-        if (mainControllerInstance != null)
-        {
-            return;
-        }
+        if (mainControllerInstance != null) return;
 
         if (mainControllerPrefab == null)
         {
@@ -20,23 +17,21 @@ public class SplashScreen : MonoBehaviour
             return;
         }
 
-        // Instantiate the prefab
         mainControllerInstance = Instantiate(mainControllerPrefab);
-        mainControllerInstance.name = mainControllerPrefab.name; // removes "(Clone)" suffix
-
-        // Make it persist across scene loads
+        mainControllerInstance.name = mainControllerPrefab.name;
         DontDestroyOnLoad(mainControllerInstance);
     }
-    
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+
+    private void Start()
     {
-        
+        StartCoroutine(AdvanceToGame());
     }
 
-    // Update is called once per frame
-    void Update()
+    private IEnumerator AdvanceToGame()
     {
-        
+        yield return new WaitForSeconds(1f);
+
+        if (mainControllerInstance != null)
+            mainControllerInstance.GetComponent<MainController>().LoadGameScene();
     }
 }

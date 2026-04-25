@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 826989140195531421}
   - component: {fileID: 6096751035746356571}
+  - component: {fileID: 1563887965491129339}
   m_Layer: 0
   m_Name: MainController
   m_TagString: Untagged
@@ -44,3 +45,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4d340f22afd6d4e8791c650c667aef29, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MainController
+  variants: []
+  testVariantIndex: 0
+--- !u!114 &1563887965491129339
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3163253870903694375}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 667a6facfeaf64b78a477f6b9394a633, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::GameSceneController
+  bottomLayerSlot: {fileID: 0}
+  leftComponentSlot: {fileID: 0}
+  rightComponentSlot: {fileID: 0}
