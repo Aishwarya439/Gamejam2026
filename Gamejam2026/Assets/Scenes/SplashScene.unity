@@ -240,6 +240,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SplashScreen
   mainControllerPrefab: {fileID: 3163253870903694375, guid: 897fda37f16b449c2931f7d5ba058243, type: 3}
+  audioSourcePrefab: {fileID: 6211163965102059987, guid: 8ff76c01409284b2ea3d9dbf1da4912c, type: 3}
 --- !u!114 &213070976
 MonoBehaviour:
   m_ObjectHideFlags: 0

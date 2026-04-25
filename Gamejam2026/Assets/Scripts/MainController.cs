@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -21,6 +22,11 @@ public class MainController : MonoBehaviour
         }
         Instance = this;
         DontDestroyOnLoad(gameObject);
+    }
+
+    private void Start()
+    {
+        AudioManager.Instance.PlayBGM("MainTheme");
     }
 
     private void OnEnable()
@@ -49,8 +55,8 @@ public class MainController : MonoBehaviour
     {
         if (scene.name != "GameScene") return;
 
-        GameSceneController controller = FindFirstObjectByType<GameSceneController>();
-        if (controller == null)
+        //GameSceneController controller = FindFirstObjectByType<GameSceneController>();
+        //if (controller == null)
         {
             Debug.LogError("GameSceneController not found in GameScene!");
             return;
@@ -66,6 +72,6 @@ public class MainController : MonoBehaviour
         if (configs == null || configs.Length == 0) return;
 
         int index = Mathf.Clamp(selectedConfigIndex, 0, configs.Length - 1);
-        controller.ApplyVariant(configs[index]);
+        //controller.ApplyVariant(configs[index]);
     }
 }
