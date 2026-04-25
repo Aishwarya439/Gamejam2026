@@ -21,7 +21,7 @@ public class LobbyController : MonoBehaviour
                 btn.onClick.AddListener(() => OnPanelClicked(index));
         }
 
-        int count = 5; //MainController.Instance.CompletionIndex + 1;
+        int count = MainController.Instance.CompletionIndex + 1;
         StartCoroutine(RevealPanels(count));
     }
 
@@ -48,6 +48,8 @@ public class LobbyController : MonoBehaviour
                     Button btn = panel.GetComponent<Button>();
                     if (btn != null)
                         btn.interactable = true;
+
+                    panel.transform.DOScale(1.08f, 1f).SetLoops(-1, LoopType.Yoyo).SetEase(Ease.InOutSine);
                 }
             }
             yield return new WaitForSeconds(revealDelay);
