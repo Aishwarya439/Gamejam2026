@@ -8,7 +8,7 @@ public class MainController : MonoBehaviour
 
     [SerializeField] private string[] variantConfigFiles;
 
-    private int selectedConfigIndex = 0;
+    private int selectedConfigIndex = 3;
     private bool hasLoadedGame = false;
 
     public int CompletionIndex { get; set; }
@@ -51,12 +51,19 @@ public class MainController : MonoBehaviour
         SceneManager.LoadScene("GameScene");
     }
 
+    public void OnSceneEnd()
+    {
+        CompletionIndex++;
+        hasLoadedGame = false;
+        SceneManager.LoadScene("LobbyScene");
+    }
+
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
         if (scene.name != "GameScene") return;
 
-        //GameSceneController controller = FindFirstObjectByType<GameSceneController>();
-        //if (controller == null)
+        GameSceneController controller = FindFirstObjectByType<GameSceneController>();
+        if (controller == null)
         {
             Debug.LogError("GameSceneController not found in GameScene!");
             return;
@@ -72,6 +79,6 @@ public class MainController : MonoBehaviour
         if (configs == null || configs.Length == 0) return;
 
         int index = Mathf.Clamp(selectedConfigIndex, 0, configs.Length - 1);
-        //controller.ApplyVariant(configs[index]);
+        controller.ApplyVariant(configs[index], index);
     }
 }

@@ -40,9 +40,9 @@ public class LobbyController : MonoBehaviour
 
     private void OnPanelClicked(int index)
     {
-        // do index+1
         Debug.Log($"Panel clicked: index {index+1}");
         MainController.Instance.SetConfigIndex(index+1);
+        MainController.Instance.LoadGameScene();
     }
     
     private IEnumerator RevealPanels(int count)

@@ -49,7 +49,7 @@ public class SplashScreen : MonoBehaviour
     {
         yield return new WaitForSeconds(1f);
 
-        if (mainControllerInstance != null)
-            mainControllerInstance.GetComponent<MainController>().LoadGameScene();
+        // UnityEngine.SceneManagement.SceneManager.LoadScene(
+        //     UnityEngine.SceneManagement.SceneManager.GetActiveScene().buildIndex + 1);
     }
 }

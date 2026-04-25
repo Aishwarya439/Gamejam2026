@@ -1,26 +1,31 @@
 [
     {
-        "visibilityState": "WithBottomLayer",
+        "gameType": "A",
+        "visibilityState": "WithoutBottomLayer",
         "evaluationLogic": "A",
-        "components": [
-            { "label": "Component 1" },
-            { "label": "Component 2" },
-            { "label": "Component 3" },
-            { "label": "Component 4" },
-            { "label": "Component 5" },
-            { "label": "Component 6" }
-        ]
+        "components": 6
     },
     {
+        "gameType": "B",
         "visibilityState": "WithoutBottomLayer",
         "evaluationLogic": "B",
-        "components": [
-            { "label": "Component 7" },
-            { "label": "Component 8" },
-            { "label": "Component 9" },
-            { "label": "Component 10" },
-            { "label": "Component 11" },
-            { "label": "Component 12" }
-        ]
+        "components": 8,
+        "rows": 2,
+        "columns": 4
+    },
+    {
+        "gameType": "C",
+        "visibilityState": "WithBottomLayer",
+        "evaluationLogic": "B",
+        "components": 3,
+        "slots": 3
+    },
+    {
+        "gameType": "D",
+        "visibilityState": "WithBottomLayer",
+        "evaluationLogic": "B",
+        "components": 3,
+        "slots": 3
+       
     }
 ]

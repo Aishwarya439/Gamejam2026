@@ -16,17 +16,15 @@ public enum EvaluationLogic
 }
 
 [System.Serializable]
-public class ComponentData
-{
-    public string label;
-}
-
-[System.Serializable]
 public class VariantConfig
 {
+    public string gameType;
     public string visibilityState;
     public string evaluationLogic;
-    public ComponentData[] components;
+    public int components;
+    public int rows;
+    public int columns;
+    public int slots;
 
     public VisibilityState VisibilityState =>
         System.Enum.TryParse(visibilityState, out VisibilityState v) ? v : VisibilityState.WithBottomLayer;
