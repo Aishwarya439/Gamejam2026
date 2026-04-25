@@ -8,11 +8,24 @@ public class LobbyController : MonoBehaviour
 {
     [SerializeField] private GameObject[] panels;
     [SerializeField] private float revealDelay = 0.75f;
+    [SerializeField] private GameObject startGameObject;
+    [SerializeField] private GameObject bookGameObject;
+    [SerializeField] private GameObject startButton;
     
     private static List<int> panelOrder = new () { 1, 5, 4, 6, 11, 2, 7, 8, 9, 10, 3, 12 };
     
     void Start()
     {
+        startButton.transform.DOScale(1.08f, 1f).SetLoops(-1, LoopType.Yoyo).SetEase(Ease.InOutSine);
+    }
+    
+    public void OnStartClick()
+    {
+        startButton.transform.DOKill();
+        startButton.transform.localScale = Vector3.one;
+        startGameObject.SetActive(false);
+        bookGameObject.SetActive(true);
+        
         for (int i = 0; i < panels.Length; i++)
         {
             int index = i;
