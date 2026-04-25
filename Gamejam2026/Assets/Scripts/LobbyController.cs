@@ -16,7 +16,27 @@ public class LobbyController : MonoBehaviour
     
     void Start()
     {
-        startButton.transform.DOScale(1.08f, 1f).SetLoops(-1, LoopType.Yoyo).SetEase(Ease.InOutSine);
+        bool isFirstVisit = MainController.Instance.CompletionIndex == 0;
+        startGameObject.SetActive(isFirstVisit);
+        bookGameObject.SetActive(!isFirstVisit);
+
+        if (isFirstVisit)
+        {
+            startButton.transform.DOScale(1.08f, 1f).SetLoops(-1, LoopType.Yoyo).SetEase(Ease.InOutSine);
+        }
+        else
+        {
+            for (int i = 0; i < panels.Length; i++)
+            {
+                int index = i;
+                Button btn = panels[i].GetComponent<Button>();
+                if (btn != null)
+                    btn.onClick.AddListener(() => OnPanelClicked(index));
+            }
+
+            int count = MainController.Instance.CompletionIndex + 1;
+            StartCoroutine(RevealPanels(count));
+        }
     }
     
     public void OnStartClick()

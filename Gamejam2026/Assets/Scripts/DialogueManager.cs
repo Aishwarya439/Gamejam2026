@@ -5,7 +5,6 @@ using DG.Tweening;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
-using UnityEngine.SceneManagement;
 
 [Serializable]
 public class DialogueEntry
@@ -173,9 +172,7 @@ public class DialogueManager : MonoBehaviour
 
     private void OnDialogueComplete()
     {
-        Debug.Log("All dialogues finished.");
         SetNextButtonActive(false);
-
-        SceneManager.LoadScene("LobbyScene");
+        MainController.Instance.LoadLobbyScene();
     }
 }

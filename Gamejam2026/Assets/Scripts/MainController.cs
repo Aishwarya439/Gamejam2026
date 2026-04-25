@@ -1,17 +1,22 @@
-using System;
+using System.Collections;
+using DG.Tweening;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class MainController : MonoBehaviour
 {
     public static MainController Instance { get; private set; }
 
     [SerializeField] private string[] variantConfigFiles;
+    [SerializeField] private float fadeDuration = 0.4f;
 
     private int selectedConfigIndex = 3;
     private bool hasLoadedGame = false;
 
     public int CompletionIndex { get; set; }
+
+    private CanvasGroup overlay;
 
     private void Awake()
     {
@@ -22,6 +27,8 @@ public class MainController : MonoBehaviour
         }
         Instance = this;
         DontDestroyOnLoad(gameObject);
+
+        BuildOverlay();
     }
 
     private void Start()
@@ -39,6 +46,35 @@ public class MainController : MonoBehaviour
         SceneManager.sceneLoaded -= OnSceneLoaded;
     }
 
+    private void BuildOverlay()
+    {
+        GameObject canvasGo = new GameObject("TransitionCanvas");
+        canvasGo.transform.SetParent(transform);
+
+        Canvas canvas = canvasGo.AddComponent<Canvas>();
+        canvas.renderMode = RenderMode.ScreenSpaceOverlay;
+        canvas.sortingOrder = 999;
+
+        canvasGo.AddComponent<CanvasScaler>();
+        canvasGo.AddComponent<GraphicRaycaster>();
+
+        GameObject panelGo = new GameObject("FadePanel");
+        panelGo.transform.SetParent(canvasGo.transform, false);
+
+        RectTransform rect = panelGo.AddComponent<RectTransform>();
+        rect.anchorMin = Vector2.zero;
+        rect.anchorMax = Vector2.one;
+        rect.offsetMin = Vector2.zero;
+        rect.offsetMax = Vector2.zero;
+
+        Image img = panelGo.AddComponent<Image>();
+        img.color = Color.black;
+
+        overlay = panelGo.AddComponent<CanvasGroup>();
+        overlay.alpha = 0f;
+        overlay.blocksRaycasts = false;
+    }
+
     public void SetConfigIndex(int index)
     {
         selectedConfigIndex = index;
@@ -48,18 +84,39 @@ public class MainController : MonoBehaviour
     {
         if (hasLoadedGame) return;
         hasLoadedGame = true;
-        SceneManager.LoadScene("GameScene");
+        FadeAndLoad("GameScene");
+    }
+
+    public void LoadLobbyScene()
+    {
+        FadeAndLoad("LobbyScene");
     }
 
     public void OnSceneEnd()
     {
         CompletionIndex++;
         hasLoadedGame = false;
-        SceneManager.LoadScene("LobbyScene");
+        FadeAndLoad("LobbyScene");
+    }
+
+    private void FadeAndLoad(string sceneName)
+    {
+        overlay.DOKill();
+        overlay.blocksRaycasts = true;
+        DOTween.To(() => overlay.alpha, x => overlay.alpha = x, 1f, fadeDuration)
+            .SetUpdate(true)
+            .OnComplete(() => SceneManager.LoadScene(sceneName));
     }
 
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
+        if (scene.name == "SplashScene") return;
+
+        overlay.DOKill();
+        DOTween.To(() => overlay.alpha, x => overlay.alpha = x, 0f, fadeDuration)
+            .SetUpdate(true)
+            .OnComplete(() => overlay.blocksRaycasts = false);
+
         if (scene.name != "GameScene") return;
 
         GameSceneController controller = FindFirstObjectByType<GameSceneController>();
