@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class bottomLayer : MonoBehaviour
 {
@@ -67,6 +68,17 @@ public class bottomLayer : MonoBehaviour
         float slotHeight = containerHeight - 2 * GAP;
         float startX = -containerWidth / 2f + GAP + slotWidth / 2f;
 
+        // Full-width background line — spawned first so slots render on top
+        GameObject fullLine = new GameObject("TimelineLine", typeof(RectTransform), typeof(Image));
+        fullLine.transform.SetParent(transform, false);
+        RectTransform fullLineRect = fullLine.GetComponent<RectTransform>();
+        fullLineRect.anchorMin = new Vector2(0.5f, 0.5f);
+        fullLineRect.anchorMax = new Vector2(0.5f, 0.5f);
+        fullLineRect.pivot = new Vector2(0.5f, 0.5f);
+        fullLineRect.sizeDelta = new Vector2(containerWidth, 4f);
+        fullLineRect.anchoredPosition = Vector2.zero;
+        fullLine.GetComponent<Image>().color = Color.black;
+
         for (int i = 0; i < slotCount; i++)
         {
             GameObject instance = Instantiate(slotPrefab, transform);
@@ -83,6 +95,48 @@ public class bottomLayer : MonoBehaviour
             container.Setup(i + 1, slotSprite);
             container.Unlock();
             slots.Add(container);
+        }
+
+        // Calculate actual rendered sprite width inside slot rect (preserveAspect shrinks it)
+        float spriteRenderedWidth = slotWidth;
+        if (slotSprite != null)
+        {
+            float spriteAspect = slotSprite.rect.width / slotSprite.rect.height;
+            float rectAspect = slotWidth / slotHeight;
+            if (spriteAspect < rectAspect)
+                spriteRenderedWidth = slotHeight * spriteAspect;
+        }
+
+        // Spawn random dots in each gap (including before first and after last slot)
+        for (int i = 0; i <= slotCount; i++)
+        {
+            float gapLeft = i == 0
+                ? -containerWidth / 2f
+                : startX + (i - 1) * (slotWidth + GAP) + spriteRenderedWidth / 2f;
+            float gapRight = i == slotCount
+                ? containerWidth / 2f
+                : startX + i * (slotWidth + GAP) - spriteRenderedWidth / 2f;
+
+            float gapWidth = gapRight - gapLeft;
+            if (gapWidth <= 0) continue;
+
+            int dotCount = Random.Range(1, 3);
+            for (int d = 0; d < dotCount; d++)
+            {
+                float dotX = Random.Range(gapLeft + 6f, gapRight - 6f);
+
+                GameObject dot = new GameObject($"Dot_{i}_{d}", typeof(RectTransform), typeof(Image));
+                dot.transform.SetParent(transform, false);
+
+                RectTransform dotRect = dot.GetComponent<RectTransform>();
+                dotRect.anchorMin = new Vector2(0.5f, 0.5f);
+                dotRect.anchorMax = new Vector2(0.5f, 0.5f);
+                dotRect.pivot = new Vector2(0.5f, 0.5f);
+                dotRect.sizeDelta = new Vector2(8f, 8f);
+                dotRect.anchoredPosition = new Vector2(dotX, 0f);
+
+                dot.GetComponent<Image>().color = Color.black;
+            }
         }
     }
 

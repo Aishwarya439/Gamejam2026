@@ -12,7 +12,8 @@ public class LobbyController : MonoBehaviour
     [SerializeField] private GameObject bookGameObject;
     [SerializeField] private GameObject startButton;
     
-    private static List<int> panelOrder = new () { 1, 5, 4, 6, 11, 2, 7, 8, 9, 10, 3, 12 };
+    // private static List<int> panelOrder = new () { 1, 5, 4, 6, 11, 2, 7, 8, 9, 10, 3, 12 };
+    private static List<int> panelOrder = new () { 1, 3, 4, 2 };
     
     void Start()
     {
@@ -60,32 +61,49 @@ public class LobbyController : MonoBehaviour
 
     private void OnPanelClicked(int index)
     {
-        Debug.Log($"Panel clicked: index {index+1}");
-        MainController.Instance.SetConfigIndex(index+1);
+        Debug.Log($"Panel clicked: index {index}");
+        MainController.Instance.SetConfigIndex(index);
         MainController.Instance.LoadGameScene();
     }
     
     private IEnumerator RevealPanels(int count)
     {
-        for (int i = 0; i < count && i < panelOrder.Count; i++)
+        // Show all previously completed panels instantly
+        for (int i = 0; i < count - 1 && i < panelOrder.Count; i++)
         {
             int panelIndex = panelOrder[i] - 1;
             if (panelIndex >= 0 && panelIndex < panels.Length)
             {
                 GameObject panel = panels[panelIndex];
                 panel.SetActive(true);
-                panel.GetComponent<Image>().DOFade(1, 1).SetEase(Ease.OutCubic);
-
-                if (i == count - 1)
-                {
-                    Button btn = panel.GetComponent<Button>();
-                    if (btn != null)
-                        btn.interactable = true;
-
-                    panel.transform.DOScale(1.08f, 1f).SetLoops(-1, LoopType.Yoyo).SetEase(Ease.InOutSine);
-                }
+                panel.GetComponent<Image>().color = new Color(1f, 1f, 1f, 1f);
             }
-            yield return new WaitForSeconds(revealDelay);
         }
+
+        // Animate only the next unlocked panel
+        int nextIndex = count - 1;
+        if (nextIndex >= 0 && nextIndex < panelOrder.Count)
+        {
+            int panelIndex = panelOrder[nextIndex] - 1;
+            if (panelIndex >= 0 && panelIndex < panels.Length)
+            {
+                GameObject panel = panels[panelIndex];
+                panel.SetActive(true);
+
+                Image img = panel.GetComponent<Image>();
+                img.color = new Color(1f, 1f, 1f, 0f);
+                img.DOFade(1f, 1f).SetEase(Ease.OutCubic);
+
+                yield return new WaitForSeconds(revealDelay);
+
+                Button btn = panel.GetComponent<Button>();
+                if (btn != null)
+                    btn.interactable = true;
+
+                panel.transform.DOScale(1.08f, 1f).SetLoops(-1, LoopType.Yoyo).SetEase(Ease.InOutSine);
+            }
+        }
+
+        yield break;
     }
 }

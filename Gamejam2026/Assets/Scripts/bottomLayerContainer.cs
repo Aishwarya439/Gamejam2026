@@ -31,7 +31,10 @@ public class bottomLayerContainer : MonoBehaviour
             slotImg.SetActive(false);
 
         if (image != null && slotSprite != null)
+        {
             image.sprite = slotSprite;
+            image.preserveAspect = true;
+        }
 
         Lock();
     }

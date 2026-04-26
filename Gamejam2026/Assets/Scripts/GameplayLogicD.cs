@@ -5,6 +5,7 @@ public class GameplayLogicD : IGameplayLogic
 {
     private GameSceneController controller;
     private int configIndex;
+    private int assetId;
     private int totalComponents;
     private readonly int slotCount;
 
@@ -19,10 +20,11 @@ public class GameplayLogicD : IGameplayLogic
         this.slotCount = slotCount;
     }
 
-    public void Init(GameSceneController controller, int configIndex, int totalComponents)
+    public void Init(GameSceneController controller, int configIndex, int assetId, int totalComponents)
     {
         this.controller = controller;
         this.configIndex = configIndex;
+        this.assetId = assetId;
         this.totalComponents = totalComponents;
 
         GameObject bottomLayerGo = GameObject.Find("bottomLayer");
@@ -33,7 +35,7 @@ public class GameplayLogicD : IGameplayLogic
         }
 
         bottomLayerComponent = bottomLayerGo.GetComponent<bottomLayer>();
-        Sprite slotSprite = Resources.Load<Sprite>("Art/slot");
+        Sprite slotSprite = System.Array.Find(Resources.LoadAll<Sprite>("Art/temp"), s => s.name == "temp_56");
         bottomLayerComponent.PopulateAllUnlocked(slotCount, controller.BottomLayerContainerPrefab, slotSprite);
     }
 
@@ -44,13 +46,12 @@ public class GameplayLogicD : IGameplayLogic
         bottomLayerContainer slot = droppedOn.GetComponent<bottomLayerContainer>();
         if (slot == null || !slot.IsUnlocked || slot.IsOccupied) return false;
 
-        string path = $"Art/level_{configIndex + 1}/components/step_{index}";
+        string path = $"Art/level_{assetId}/components/step_{index}";
         Sprite itemSprite = Resources.Load<Sprite>(path);
         slot.SetItem(itemSprite);
 
         placedItems[slot.SlotIndex] = (index, draggable);
 
-        // Evaluate once all slots are filled
         if (placedItems.Count >= slotCount)
             Evaluate();
 
@@ -59,7 +60,6 @@ public class GameplayLogicD : IGameplayLogic
 
     private void Evaluate()
     {
-        // Find the last correct consecutive index from 1
         int correctUntil = 0;
         for (int i = 1; i <= slotCount; i++)
         {
@@ -69,7 +69,12 @@ public class GameplayLogicD : IGameplayLogic
                 break;
         }
 
-        // Revert everything after correctUntil
+        if (correctUntil >= slotCount)
+        {
+            OnEnd();
+            return;
+        }
+
         List<int> toRevert = new List<int>();
         foreach (var kvp in placedItems)
         {
@@ -77,28 +82,28 @@ public class GameplayLogicD : IGameplayLogic
                 toRevert.Add(kvp.Key);
         }
 
-        HashSet<componentContainer> containersToRefresh = new HashSet<componentContainer>();
-
-        foreach (int slotIdx in toRevert)
+        controller.ShakeAndReset(() =>
         {
-            DraggableItem draggable = placedItems[slotIdx].draggable;
-            placedItems.Remove(slotIdx);
+            HashSet<componentContainer> containersToRefresh = new HashSet<componentContainer>();
 
-            bottomLayerContainer slot = bottomLayerComponent.Slots[slotIdx - 1];
-            slot.ClearItem();
+            foreach (int slotIdx in toRevert)
+            {
+                DraggableItem draggable = placedItems[slotIdx].draggable;
+                placedItems.Remove(slotIdx);
 
-            draggable.Restore();
+                bottomLayerContainer slot = bottomLayerComponent.Slots[slotIdx - 1];
+                slot.ClearItem();
 
-            componentContainer container = draggable.OriginalParent?.GetComponent<componentContainer>();
-            if (container != null)
-                containersToRefresh.Add(container);
-        }
+                draggable.Restore();
 
-        foreach (componentContainer container in containersToRefresh)
-            container.RefreshLayout();
+                componentContainer container = draggable.OriginalParent?.GetComponent<componentContainer>();
+                if (container != null)
+                    containersToRefresh.Add(container);
+            }
 
-        if (correctUntil >= slotCount)
-            OnEnd();
+            foreach (componentContainer container in containersToRefresh)
+                container.RefreshLayout();
+        });
     }
 
     public void OnEnd()

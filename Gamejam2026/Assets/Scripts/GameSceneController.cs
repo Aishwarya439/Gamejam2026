@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 
 public class GameSceneController : MonoBehaviour
@@ -22,7 +23,7 @@ public class GameSceneController : MonoBehaviour
         if (bottomLayer == null)
             bottomLayer = GameObject.Find("bottomLayer");
 
-        Canvas canvas = FindFirstObjectByType<Canvas>();
+        Canvas canvas = FindSceneCanvas();
         if (canvas == null) return;
 
         RectTransform canvasRect = canvas.GetComponent<RectTransform>();
@@ -87,28 +88,28 @@ public class GameSceneController : MonoBehaviour
 
         GameObject dummyMainBg = GameObject.Find("dummyMainBg");
         if (dummyMainBg != null)
-            dummyMainBg.SetActive(config.gameType == "C");
+            dummyMainBg.SetActive(config.gameType == "variant_1");
 
         if (config.VisibilityState == VisibilityState.WithoutBottomLayer)
             ApplyFullHeightLayout();
 
-        SetGameBg(configIndex);
-        SetMainBgSprite(configIndex);
+        SetGameBg(config.asset_id);
+        SetMainBgSprite(config.asset_id);
 
         activeLogic = CreateLogic(config);
-        activeLogic.Init(this, configIndex, config.components);
+        activeLogic.Init(this, configIndex, config.asset_id, config.components);
 
-        SplitAndPopulate(config.components, configIndex);
+        SplitAndPopulate(config.components, configIndex, config.asset_id);
 
         Debug.Log($"[GameScene] GameType: {config.gameType} | Visibility: {config.VisibilityState} | Logic: {config.EvaluationLogic}");
     }
 
-    private void SetMainBgSprite(int configIndex)
+    private void SetMainBgSprite(int assetId)
     {
         GameObject mainBgGo = GameObject.Find("mainBg");
         if (mainBgGo == null) return;
 
-        string path = $"Art/level_{configIndex + 1}/start";
+        string path = $"Art/level_{assetId}/start";
         Sprite sprite = Resources.Load<Sprite>(path);
         if (sprite != null)
         {
@@ -119,12 +120,12 @@ public class GameSceneController : MonoBehaviour
             Debug.LogWarning($"[GameScene] mainBg sprite not found at: Resources/{path}");
     }
 
-    private void SetGameBg(int configIndex)
+    private void SetGameBg(int assetId)
     {
         GameObject gameBgGo = GameObject.Find("gameBg");
         if (gameBgGo == null) return;
 
-        string path = $"Art/level_{configIndex + 1}/bg";
+        string path = $"Art/level_{assetId}/bg";
         Sprite sprite = Resources.Load<Sprite>(path);
         if (sprite != null)
             gameBgGo.GetComponent<UnityEngine.UI.Image>().sprite = sprite;
@@ -132,9 +133,19 @@ public class GameSceneController : MonoBehaviour
             Debug.LogWarning($"[GameScene] gameBg sprite not found at: Resources/{path}");
     }
 
+    private Canvas FindSceneCanvas()
+    {
+        foreach (Canvas c in FindObjectsByType<Canvas>(FindObjectsSortMode.None))
+        {
+            if (c.gameObject.name != "TransitionCanvas")
+                return c;
+        }
+        return null;
+    }
+
     private void ApplyFullHeightLayout()
     {
-        Canvas canvas = FindFirstObjectByType<Canvas>();
+        Canvas canvas = FindSceneCanvas();
         RectTransform canvasRect = canvas.GetComponent<RectTransform>();
         float canvasWidth = canvasRect.rect.width;
         float canvasHeight = canvasRect.rect.height;
@@ -168,7 +179,7 @@ public class GameSceneController : MonoBehaviour
         rect.anchoredPosition = new Vector2(rect.anchoredPosition.x, 0f);
     }
 
-    private void SplitAndPopulate(int totalCount, int configIndex)
+    private void SplitAndPopulate(int totalCount, int configIndex, int assetId)
     {
         if (totalCount <= 0) return;
 
@@ -182,8 +193,8 @@ public class GameSceneController : MonoBehaviour
         System.Array.Copy(indices, 0, leftIndices, 0, leftCount);
         System.Array.Copy(indices, leftCount, rightIndices, 0, rightIndices.Length);
 
-        leftComponentContainer.Populate(leftIndices, configIndex, this, componentLayerContainerPrefab);
-        rightComponentContainer.Populate(rightIndices, configIndex, this, componentLayerContainerPrefab);
+        leftComponentContainer.Populate(leftIndices, configIndex, assetId, this, componentLayerContainerPrefab);
+        rightComponentContainer.Populate(rightIndices, configIndex, assetId, this, componentLayerContainerPrefab);
     }
 
     private void Shuffle(int[] array)
@@ -203,18 +214,57 @@ public class GameSceneController : MonoBehaviour
 
     public void NotifyLevelComplete()
     {
+        StartCoroutine(DelayedSceneEnd());
+    }
+
+    private IEnumerator DelayedSceneEnd()
+    {
+        yield return new WaitForSeconds(2f);
         MainController.Instance.OnSceneEnd();
+    }
+
+    public void ShakeAndReset(System.Action onComplete)
+    {
+        StartCoroutine(ShakeAndResetCoroutine(onComplete));
+    }
+
+    private IEnumerator ShakeAndResetCoroutine(System.Action onComplete)
+    {
+        if (bottomLayer != null)
+        {
+            Vector3 originalPos = bottomLayer.transform.localPosition;
+            float elapsed = 0f;
+            float duration = 1.5f;
+            float magnitude = 10f;
+            float frequency = 30f;
+
+            while (elapsed < duration)
+            {
+                float x = Mathf.Sin(elapsed * frequency) * magnitude * (1f - elapsed / duration);
+                bottomLayer.transform.localPosition = originalPos + new Vector3(x, 0f, 0f);
+                elapsed += Time.deltaTime;
+                yield return null;
+            }
+
+            bottomLayer.transform.localPosition = originalPos;
+        }
+        else
+        {
+            yield return new WaitForSeconds(1.5f);
+        }
+
+        onComplete?.Invoke();
     }
 
     private IGameplayLogic CreateLogic(VariantConfig config)
     {
         return config.gameType switch
         {
-            "A" => new GameplayLogicA(),
-            "B" => new GameplayLogicB(config.rows, config.columns),
-            "C" => new GameplayLogicC(config.slots),
-            "D" => new GameplayLogicD(config.slots),
-            _ => new GameplayLogicA()
+            "variant_1" => new GameplayLogicA(config.slots),
+            "variant_2" => new GameplayLogicB(),
+            "variant_3" => new GameplayLogicC(config.rows, config.columns),
+            "variant_4" => new GameplayLogicD(config.slots),
+            _ => new GameplayLogicA(config.slots)
         };
     }
 }

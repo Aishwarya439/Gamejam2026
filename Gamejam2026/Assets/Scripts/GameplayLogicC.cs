@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -6,124 +5,58 @@ public class GameplayLogicC : IGameplayLogic
 {
     private GameSceneController controller;
     private int configIndex;
+    private int assetId;
     private int totalComponents;
-    private readonly int slotCount;
+    private readonly int rows;
+    private readonly int columns;
 
-    private bottomLayer bottomLayerComponent;
-    private Dictionary<int, GameObject> dummyLayers = new Dictionary<int, GameObject>();
+    private int placedCount = 0;
+    private Image mainBgImage;
 
-    public GameplayLogicC(int slotCount)
+    public GameplayLogicC(int rows, int columns)
     {
-        this.slotCount = slotCount;
+        this.rows = rows;
+        this.columns = columns;
     }
 
-    public void Init(GameSceneController controller, int configIndex, int totalComponents)
+    public void Init(GameSceneController controller, int configIndex, int assetId, int totalComponents)
     {
         this.controller = controller;
         this.configIndex = configIndex;
+        this.assetId = assetId;
         this.totalComponents = totalComponents;
 
-        SetupBottomLayer(controller);
-        SetupDummyLayers(controller);
-    }
-
-    private void SetupBottomLayer(GameSceneController gsc)
-    {
-        GameObject bottomLayerGo = GameObject.Find("bottomLayer");
-        if (bottomLayerGo == null)
-        {
-            Debug.LogError("[GameplayLogicC] bottomLayer not found in scene!");
-            return;
-        }
-
-        bottomLayerComponent = bottomLayerGo.GetComponent<bottomLayer>();
-        Sprite slotSprite = Resources.Load<Sprite>("Art/slot");
-        bottomLayerComponent.Populate(slotCount, controller.BottomLayerContainerPrefab, slotSprite);
-    }
-
-    private void SetupDummyLayers(GameSceneController gsc)
-    {
         GameObject mainBgGo = GameObject.Find("mainBg");
-        if (mainBgGo == null) return;
-
-        string startPath = $"Art/level_{configIndex + 1}/start";
-        Sprite startSprite = Resources.Load<Sprite>(startPath);
-        Image mainBgImage = mainBgGo.GetComponent<Image>();
-        if (mainBgImage != null && startSprite != null)
-            mainBgImage.sprite = startSprite;
-        else
-            Debug.LogWarning($"[GameplayLogicC] start sprite not found at: Resources/{startPath}");
-
-        GameObject prefab = gsc.DummyMainBgPrefab;
-        if (prefab == null)
+        if (mainBgGo != null)
         {
-            Debug.LogError("[GameplayLogicC] dummyMainBgPrefab not assigned!");
-            return;
+            mainBgImage = mainBgGo.GetComponent<Image>();
+            string startPath = $"Art/level_{assetId}/start";
+            Sprite startSprite = Resources.Load<Sprite>(startPath);
+            if (startSprite != null)
+                mainBgImage.sprite = startSprite;
         }
 
-        // Register the existing scene dummyMainBg as layer 1
-        GameObject existingDummy = GameObject.Find("dummyMainBg");
-        if (existingDummy != null)
-        {
-            string path1 = $"Art/level_{configIndex + 1}/steps/step_1";
-            Sprite sprite1 = Resources.Load<Sprite>(path1);
-            Image img1 = existingDummy.GetComponent<Image>();
-            if (img1 != null && sprite1 != null)
-                img1.sprite = sprite1;
-            dummyLayers[1] = existingDummy;
-        }
-
-        Canvas.ForceUpdateCanvases();
-
-        for (int i = totalComponents; i >= 2; i--)
-        {
-            GameObject dummy = GameObject.Instantiate(prefab, mainBgGo.transform);
-            dummy.name = $"dummyMainBg_{i}";
-
-            // Stretch to fill mainBg fully
-            RectTransform rect = dummy.GetComponent<RectTransform>();
-            rect.anchorMin = Vector2.zero;
-            rect.anchorMax = Vector2.one;
-            rect.offsetMin = Vector2.zero;
-            rect.offsetMax = Vector2.zero;
-
-            string path = $"Art/level_{configIndex + 1}/steps/step_{i}";
-            Sprite sprite = Resources.Load<Sprite>(path);
-            Image img = dummy.GetComponent<Image>();
-            if (img != null && sprite != null)
-                img.sprite = sprite;
-            else
-                Debug.LogWarning($"[GameplayLogicC] Sprite not found at: Resources/{path}");
-
-            dummyLayers[i] = dummy;
-        }
+        CreatePuzzleSlots();
     }
 
     public bool OnDrop(int index, GameObject droppedOn, DraggableItem draggable)
     {
         if (droppedOn == null) return false;
 
-        bottomLayerContainer slot = droppedOn.GetComponent<bottomLayerContainer>();
-        if (slot == null || !slot.IsUnlocked) return false;
-        if (slot.SlotIndex != index) return false;
+        PuzzleSlot slot = droppedOn.GetComponent<PuzzleSlot>();
+        if (slot == null) return false;
 
-        string path = $"Art/level_{configIndex + 1}/components/step_{index}";
-        Sprite itemSprite = Resources.Load<Sprite>(path);
-        if (itemSprite != null)
-            slot.SetItem(itemSprite);
+        if (slot.slotIndex != index) return false;
+
+        string path = $"Art/level_{assetId}/components/step_{index}";
+        Sprite piece = Resources.Load<Sprite>(path);
+        if (piece != null)
+            slot.RevealPiece(piece);
         else
             Debug.LogWarning($"[GameplayLogicC] Sprite not found at: Resources/{path}");
 
-        // Remove the corresponding dummy layer
-        if (dummyLayers.TryGetValue(index, out GameObject dummy))
-        {
-            GameObject.Destroy(dummy);
-            dummyLayers.Remove(index);
-        }
-
-        bottomLayerComponent.UnlockNext(index);
-
-        if (index >= totalComponents)
+        placedCount++;
+        if (placedCount >= totalComponents)
             OnEnd();
 
         return true;
@@ -131,6 +64,58 @@ public class GameplayLogicC : IGameplayLogic
 
     public void OnEnd()
     {
+        GameObject mainBgGo = GameObject.Find("mainBg");
+        if (mainBgGo != null)
+        {
+            foreach (Transform child in mainBgGo.transform)
+                GameObject.Destroy(child.gameObject);
+        }
+
+        string finishPath = $"Art/level_{assetId}/finish";
+        Sprite finishSprite = Resources.Load<Sprite>(finishPath);
+        if (finishSprite != null && mainBgImage != null)
+            mainBgImage.sprite = finishSprite;
+        else
+            Debug.LogWarning($"[GameplayLogicC] Finish sprite not found at: Resources/{finishPath}");
+
         controller.NotifyLevelComplete();
+    }
+
+    private void CreatePuzzleSlots()
+    {
+        GameObject mainBgGo = GameObject.Find("mainBg");
+        if (mainBgGo == null) return;
+
+        RectTransform mainBgRect = mainBgGo.GetComponent<RectTransform>();
+        Canvas.ForceUpdateCanvases();
+
+        float bgWidth = mainBgRect.rect.width;
+        float bgHeight = mainBgRect.rect.height;
+        float slotWidth = bgWidth / columns;
+        float slotHeight = bgHeight / rows;
+
+        for (int r = 0; r < rows; r++)
+        {
+            for (int c = 0; c < columns; c++)
+            {
+                int slotIndex = r * columns + c + 1;
+
+                GameObject slotGo = new GameObject($"PuzzleSlot_{slotIndex}", typeof(RectTransform), typeof(Image), typeof(PuzzleSlot));
+                slotGo.transform.SetParent(mainBgGo.transform, false);
+
+                RectTransform rect = slotGo.GetComponent<RectTransform>();
+                rect.anchorMin = new Vector2(0f, 1f);
+                rect.anchorMax = new Vector2(0f, 1f);
+                rect.pivot = new Vector2(0f, 1f);
+                rect.sizeDelta = new Vector2(slotWidth, slotHeight);
+                rect.anchoredPosition = new Vector2(c * slotWidth, -r * slotHeight);
+
+                Image img = slotGo.GetComponent<Image>();
+                img.color = new Color(1f, 1f, 1f, 0.1f);
+
+                PuzzleSlot slot = slotGo.GetComponent<PuzzleSlot>();
+                slot.slotIndex = slotIndex;
+            }
+        }
     }
 }

@@ -25,6 +25,7 @@ public class VariantConfig
     public int rows;
     public int columns;
     public int slots;
+    public int asset_id;
 
     public VisibilityState VisibilityState =>
         System.Enum.TryParse(visibilityState, out VisibilityState v) ? v : VisibilityState.WithBottomLayer;

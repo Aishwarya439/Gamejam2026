@@ -5,9 +5,9 @@ public class componentLayerContainer : MonoBehaviour
 {
     [SerializeField] private Image image;
 
-    public void Setup(int index, int configIndex, GameSceneController controller)
+    public void Setup(int index, int assetId, GameSceneController controller)
     {
-        string path = $"Art/level_{configIndex + 1}/components/step_{index}";
+        string path = $"Art/level_{assetId}/components/step_{index}";
         Sprite sprite = Resources.Load<Sprite>(path);
         if (sprite != null)
             image.sprite = sprite;

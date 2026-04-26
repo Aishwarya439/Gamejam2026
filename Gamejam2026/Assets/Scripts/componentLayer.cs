@@ -12,7 +12,7 @@ public class componentContainer : MonoBehaviour
         rectTransform = GetComponent<RectTransform>();
     }
 
-    public void Populate(int[] indices, int configIndex, GameSceneController controller, GameObject prefab)
+    public void Populate(int[] indices, int configIndex, int assetId, GameSceneController controller, GameObject prefab)
     {
         foreach (Transform child in transform)
             Destroy(child.gameObject);
@@ -25,7 +25,7 @@ public class componentContainer : MonoBehaviour
         {
             GameObject instance = Instantiate(prefab, transform);
             instance.name = $"Item_{index}";
-            instance.GetComponent<componentLayerContainer>().Setup(index, configIndex, controller);
+            instance.GetComponent<componentLayerContainer>().Setup(index, assetId, controller);
             spawnedItems.Add(instance.GetComponent<RectTransform>());
         }
 

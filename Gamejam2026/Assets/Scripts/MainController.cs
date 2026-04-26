@@ -11,7 +11,7 @@ public class MainController : MonoBehaviour
     [SerializeField] private string[] variantConfigFiles;
     [SerializeField] private float fadeDuration = 0.4f;
 
-    private int selectedConfigIndex = 3;
+    private int selectedConfigIndex = 0;
     private bool hasLoadedGame = false;
 
     public int CompletionIndex { get; set; }
@@ -84,6 +84,7 @@ public class MainController : MonoBehaviour
     {
         if (hasLoadedGame) return;
         hasLoadedGame = true;
+        Debug.Log($"[MainController] Loading GameScene with configIndex: {selectedConfigIndex}");
         FadeAndLoad("GameScene");
     }
 

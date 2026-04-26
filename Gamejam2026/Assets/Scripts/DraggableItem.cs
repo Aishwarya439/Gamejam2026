@@ -1,7 +1,8 @@
+using DG.Tweening;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler
+public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler, IPointerDownHandler, IPointerUpHandler
 {
     private int itemIndex;
     private GameSceneController gameSceneController;
@@ -38,6 +39,18 @@ public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
     {
         originalParent = transform.parent;
         originalPosition = rectTransform.anchoredPosition;
+    }
+
+    public void OnPointerDown(PointerEventData eventData)
+    {
+        transform.DOKill();
+        transform.DOScale(1.25f, 0.15f).SetEase(Ease.OutQuad);
+    }
+
+    public void OnPointerUp(PointerEventData eventData)
+    {
+        transform.DOKill();
+        transform.DOScale(1f, 0.15f).SetEase(Ease.OutQuad);
     }
 
     public void OnBeginDrag(PointerEventData eventData)
