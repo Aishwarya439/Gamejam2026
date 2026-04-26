@@ -12,8 +12,7 @@ public class LobbyController : MonoBehaviour
     [SerializeField] private GameObject bookGameObject;
     [SerializeField] private GameObject startButton;
     
-    // private static List<int> panelOrder = new () { 1, 5, 4, 6, 11, 2, 7, 8, 9, 10, 3, 12 };
-    private static List<int> panelOrder = new () { 1, 3, 4, 2 };
+    private static List<int> panelOrder = new () { 1, 5, 4, 6, 11, 2, 7, 8, 9, 10, 3, 12 };
     
     void Start()
     {
@@ -102,6 +101,10 @@ public class LobbyController : MonoBehaviour
 
                 panel.transform.DOScale(1.08f, 1f).SetLoops(-1, LoopType.Yoyo).SetEase(Ease.InOutSine);
             }
+        }
+        else
+        {
+            MainController.Instance.LoadCreditsScene();
         }
 
         yield break;

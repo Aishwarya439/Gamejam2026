@@ -1,4 +1,3 @@
-using System.IO;
 using UnityEngine;
 
 public enum VisibilityState
@@ -26,6 +25,7 @@ public class VariantConfig
     public int columns;
     public int slots;
     public int asset_id;
+    public DialogueEntry[] dialogue;
 
     public VisibilityState VisibilityState =>
         System.Enum.TryParse(visibilityState, out VisibilityState v) ? v : VisibilityState.WithBottomLayer;
@@ -33,21 +33,4 @@ public class VariantConfig
     public EvaluationLogic EvaluationLogic =>
         System.Enum.TryParse(evaluationLogic, out EvaluationLogic e) ? e : EvaluationLogic.A;
 
-    public static VariantConfig[] LoadAll(string fileName)
-    {
-        string path = Path.Combine(Application.streamingAssetsPath, fileName);
-        if (!File.Exists(path))
-        {
-            Debug.LogError($"VariantConfig not found at: {path}");
-            return null;
-        }
-        string json = File.ReadAllText(path);
-        return JsonUtility.FromJson<VariantConfigList>("{\"items\":" + json + "}").items;
-    }
-
-    [System.Serializable]
-    private class VariantConfigList
-    {
-        public VariantConfig[] items;
-    }
 }

@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using DG.Tweening;
 using UnityEngine;
@@ -8,7 +9,7 @@ public class MainController : MonoBehaviour
 {
     public static MainController Instance { get; private set; }
 
-    [SerializeField] private string[] variantConfigFiles;
+    [Serializable] private class VariantConfigList { public VariantConfig[] items; }
     [SerializeField] private float fadeDuration = 0.4f;
 
     private int selectedConfigIndex = 0;
@@ -84,7 +85,6 @@ public class MainController : MonoBehaviour
     {
         if (hasLoadedGame) return;
         hasLoadedGame = true;
-        Debug.Log($"[MainController] Loading GameScene with configIndex: {selectedConfigIndex}");
         FadeAndLoad("GameScene");
     }
 
@@ -93,11 +93,22 @@ public class MainController : MonoBehaviour
         FadeAndLoad("LobbyScene");
     }
 
+    public void LoadCreditsScene()
+    {
+        FadeAndLoad("CreditsScene");
+    }
+
     public void OnSceneEnd()
     {
         CompletionIndex++;
         hasLoadedGame = false;
         FadeAndLoad("LobbyScene");
+    }
+
+    public void LoadDialogueScene()
+    {
+        hasLoadedGame = false;
+        FadeAndLoad("DialogueScene");
     }
 
     private void FadeAndLoad(string sceneName)
@@ -118,6 +129,13 @@ public class MainController : MonoBehaviour
             .SetUpdate(true)
             .OnComplete(() => overlay.blocksRaycasts = false);
 
+        if (scene.name == "DialogueScene")
+        {
+            DialogueManager dm = FindFirstObjectByType<DialogueManager>();
+            dm?.Init(CompletionIndex);
+            return;
+        }
+
         if (scene.name != "GameScene") return;
 
         GameSceneController controller = FindFirstObjectByType<GameSceneController>();
@@ -127,13 +145,14 @@ public class MainController : MonoBehaviour
             return;
         }
 
-        if (variantConfigFiles == null || variantConfigFiles.Length == 0)
+        TextAsset jsonFile = Resources.Load<TextAsset>("variant_dummy");
+        if (jsonFile == null)
         {
-            Debug.LogError("No variant config files assigned to MainController!");
+            Debug.LogError("variant_dummy not found in Resources!");
             return;
         }
 
-        VariantConfig[] configs = VariantConfig.LoadAll(variantConfigFiles[0]);
+        VariantConfig[] configs = JsonUtility.FromJson<VariantConfigList>("{\"items\":" + jsonFile.text + "}").items;
         if (configs == null || configs.Length == 0) return;
 
         int index = Mathf.Clamp(selectedConfigIndex, 0, configs.Length - 1);

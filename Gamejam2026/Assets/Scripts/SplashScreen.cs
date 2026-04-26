@@ -5,6 +5,7 @@ public class SplashScreen : MonoBehaviour
 {
     [SerializeField] private GameObject mainControllerPrefab;
     [SerializeField] private GameObject audioSourcePrefab;
+    [SerializeField] private DialogueManager dialogueManager;
 
     private static GameObject mainControllerInstance;
     private static GameObject audioSourceInstance;
@@ -38,6 +39,8 @@ public class SplashScreen : MonoBehaviour
                 DontDestroyOnLoad(audioSourceInstance);
             }
         }
+        
+        dialogueManager.Init("SplashScene");
     }
 
     private void Start()

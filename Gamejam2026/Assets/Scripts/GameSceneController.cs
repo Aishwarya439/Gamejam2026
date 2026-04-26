@@ -3,6 +3,21 @@ using UnityEngine;
 
 public class GameSceneController : MonoBehaviour
 {
+    [System.Serializable] private class VariantEntry { public DialogueEntry[] dialogue; }
+    [System.Serializable] private class VariantWrapper { public VariantEntry[] items; }
+
+    private bool CurrentConfigHasDialogue()
+    {
+        TextAsset jsonFile = Resources.Load<TextAsset>("variant_dummy");
+        if (jsonFile == null) return false;
+
+        VariantWrapper wrapper = JsonUtility.FromJson<VariantWrapper>("{\"items\":" + jsonFile.text + "}");
+        if (wrapper?.items == null || pendingConfigIndex >= wrapper.items.Length) return false;
+
+        VariantEntry entry = wrapper.items[pendingConfigIndex];
+        return entry.dialogue != null && entry.dialogue.Length > 0;
+    }
+
     [SerializeField] private GameObject bottomLayer;
     [SerializeField] private GameObject componentLayerPrefab;
     [SerializeField] private GameObject componentLayerContainerPrefab;
@@ -67,12 +82,11 @@ public class GameSceneController : MonoBehaviour
 
     public void ApplyVariant(VariantConfig config, int configIndex)
     {
-        if (leftComponentContainer == null || rightComponentContainer == null)
-        {
-            pendingConfig = config;
-            pendingConfigIndex = configIndex;
-            return;
-        }
+        pendingConfig = config;
+        pendingConfigIndex = configIndex;
+
+        if (leftComponentContainer == null || rightComponentContainer == null) return;
+
         ApplyVariantInternal(config, configIndex);
     }
 
@@ -214,6 +228,12 @@ public class GameSceneController : MonoBehaviour
 
     public void NotifyLevelComplete()
     {
+        if (CurrentConfigHasDialogue())
+        {
+            MainController.Instance.LoadDialogueScene();
+            return;
+        }
+        
         StartCoroutine(DelayedSceneEnd());
     }
 

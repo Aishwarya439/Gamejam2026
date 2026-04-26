@@ -23,7 +23,7 @@ public class DialogueList
 public class DialogueManager : MonoBehaviour
 {
     [Header("Config")]
-    [SerializeField] private string rootFolder = "Dialogue";
+    private string rootFolder;
     private string dataFileName = "data";
     private string imagesSubfolder = "image";
 
@@ -32,6 +32,7 @@ public class DialogueManager : MonoBehaviour
     [SerializeField] private TMP_Text dialogueText;
     [SerializeField] private Image backgroundImage;
     [SerializeField] private Button nextButton;
+    [SerializeField] private GameObject dialogueCanvas;
 
     [Header("Typewriter Settings")]
     [SerializeField] private float typeSpeed = 0.03f;
@@ -41,20 +42,56 @@ public class DialogueManager : MonoBehaviour
     private Coroutine typingCoroutine;
     private bool isTyping = false;
     private string currentFullText = "";
+    private bool isSplashDialogue = false;
 
-    private void Start()
+    [Serializable] private class VariantEntry { public DialogueEntry[] dialogue; }
+    [Serializable] private class VariantWrapper { public VariantEntry[] items; }
+
+    public void Init(string folder)
     {
-        LoadDialogues();
+        isSplashDialogue = true;
+        rootFolder = CombinePath("Dialogues", folder);
+        LoadDialogues(CombinePath(rootFolder, dataFileName));
+
+        if (dialogues.Count == 0) return;
 
         if (nextButton != null)
-        {
             nextButton.onClick.AddListener(OnNextPressed);
+
+        dialogueCanvas.SetActive(true);
+        ShowDialogue(0);
+    }
+
+    public void Init(int index)
+    {
+        rootFolder = CombinePath("Dialogues", index.ToString());
+
+        if (!LoadVariantDialogues(index)) return;
+
+        if (nextButton != null)
+            nextButton.onClick.AddListener(OnNextPressed);
+
+        dialogueCanvas.SetActive(true);
+        ShowDialogue(0);
+    }
+
+    private bool LoadVariantDialogues(int index)
+    {
+        TextAsset jsonFile = Resources.Load<TextAsset>("variant_dummy");
+        if (jsonFile == null)
+        {
+            Debug.LogError("Could not load 'variant_dummy' from Resources.");
+            return false;
         }
 
-        if (dialogues.Count > 0)
-        {
-            ShowDialogue(0);
-        }
+        VariantWrapper wrapper = JsonUtility.FromJson<VariantWrapper>("{\"items\":" + jsonFile.text + "}");
+        if (wrapper?.items == null || index >= wrapper.items.Length) return false;
+
+        VariantEntry entry = wrapper.items[index];
+        if (entry.dialogue == null || entry.dialogue.Length == 0) return false;
+
+        dialogues = new List<DialogueEntry>(entry.dialogue);
+        return true;
     }
 
     private string CombinePath(params string[] parts)
@@ -70,9 +107,8 @@ public class DialogueManager : MonoBehaviour
         return string.Join("/", validParts);
     }
 
-    private void LoadDialogues()
+    private void LoadDialogues(string jsonPath)
     {
-        string jsonPath = CombinePath(rootFolder, dataFileName);
         TextAsset jsonFile = Resources.Load<TextAsset>(jsonPath);
         if (jsonFile == null)
         {
@@ -173,6 +209,10 @@ public class DialogueManager : MonoBehaviour
     private void OnDialogueComplete()
     {
         SetNextButtonActive(false);
-        MainController.Instance.LoadLobbyScene();
+        if (isSplashDialogue)
+            MainController.Instance.LoadLobbyScene();
+        else
+            MainController.Instance.OnSceneEnd();
+        
     }
 }

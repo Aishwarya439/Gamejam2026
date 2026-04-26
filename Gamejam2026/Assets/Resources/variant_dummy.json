@@ -1,0 +1,47 @@
+[
+    {
+        "gameType": "A",
+        "visibilityState": "WithoutBottomLayer",
+        "evaluationLogic": "A",
+        "components": 6,
+        "dialogue": [
+            {
+                "name": "Meera",
+                "image": "1",
+                "text": "this is a testhwqevr3hjbk"
+            },
+            {
+                "name": "Meera",
+                "image": "1",
+                "text": "this is a testewbrihw  ekf"
+            },
+            {
+                "name": "Meera",
+                "image": "1",
+                "text": "this is a testweshdghfhouwh3"
+            }
+        ]
+    },
+    {
+        "gameType": "B",
+        "visibilityState": "WithoutBottomLayer",
+        "evaluationLogic": "B",
+        "components": 8,
+        "rows": 2,
+        "columns": 4
+    },
+    {
+        "gameType": "C",
+        "visibilityState": "WithBottomLayer",
+        "evaluationLogic": "B",
+        "components": 3,
+        "slots": 3
+    },
+    {
+        "gameType": "D",
+        "visibilityState": "WithBottomLayer",
+        "evaluationLogic": "B",
+        "components": 3,
+        "slots": 3
+    }
+]
