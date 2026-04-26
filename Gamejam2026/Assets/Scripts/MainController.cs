@@ -10,7 +10,7 @@ public class MainController : MonoBehaviour
     public static MainController Instance { get; private set; }
 
     [Serializable] private class VariantConfigList { public VariantConfig[] items; }
-    [SerializeField] private float fadeDuration = 0.4f;
+    [SerializeField] private float fadeDuration = 0.2f;
 
     private int selectedConfigIndex = 0;
     private bool hasLoadedGame = false;

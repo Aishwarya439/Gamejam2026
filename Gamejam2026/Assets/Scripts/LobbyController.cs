@@ -110,6 +110,7 @@ public class LobbyController : MonoBehaviour
         }
         else
         {
+            yield return new WaitForSeconds(2f);
             MainController.Instance.LoadCreditsScene();
         }
 

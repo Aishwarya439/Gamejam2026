@@ -102,7 +102,16 @@ public class GameSceneController : MonoBehaviour
         }
 
         bottomLayer.SetActive(config.VisibilityState == VisibilityState.WithBottomLayer);
-        
+
+        if (config.gameType == "variant_2" && config.VisibilityState == VisibilityState.WithBottomLayer)
+        {
+            string infoPath = $"Art/level_{config.asset_id}/info";
+            Sprite infoSprite = Resources.Load<Sprite>(infoPath);
+            Debug.Log($"[GameScene] info sprite at {infoPath}: {(infoSprite != null ? "FOUND" : "NOT FOUND")}");
+            if (infoSprite != null)
+                bottomLayer.GetComponent<bottomLayer>().ShowInfoOnly(infoSprite);
+        }
+
         if (!string.IsNullOrEmpty(config.messageText))
         {
             headerGameObject.SetActive(true);

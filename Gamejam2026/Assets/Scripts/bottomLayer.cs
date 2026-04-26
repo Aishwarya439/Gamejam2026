@@ -147,5 +147,23 @@ public class bottomLayer : MonoBehaviour
             slots[nextIndex].Unlock();
     }
 
+    public void ShowInfoOnly(Sprite infoSprite)
+    {
+        foreach (Transform child in transform)
+            Destroy(child.gameObject);
+        slots.Clear();
+
+        Image bg = GetComponent<Image>();
+        if (bg == null) bg = gameObject.AddComponent<Image>();
+        bg.sprite = infoSprite;
+        bg.preserveAspect = true;
+        bg.color = Color.white;
+
+        CanvasGroup cg = GetComponent<CanvasGroup>();
+        if (cg == null) cg = gameObject.AddComponent<CanvasGroup>();
+        cg.interactable = false;
+        cg.blocksRaycasts = false;
+    }
+
     public List<bottomLayerContainer> Slots => slots;
 }
