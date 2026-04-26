@@ -1,47 +1,61 @@
 [
     {
-        "gameType": "A",
+        "gameType": "variant_1",
+        "visibilityState": "WithBottomLayer",
+        "components": 4,
+        "slots": 4,
+        "asset_id": 1
+    },
+    {"6":1, "asset_id": 6},
+    {"11":1, "asset_id": 11},
+    {
+        "gameType": "variant_2",
         "visibilityState": "WithoutBottomLayer",
-        "evaluationLogic": "A",
         "components": 6,
-        "dialogue": [
-            {
-                "name": "Meera",
-                "image": "1",
-                "text": "this is a testhwqevr3hjbk"
-            },
-            {
-                "name": "Meera",
-                "image": "1",
-                "text": "this is a testewbrihw  ekf"
-            },
-            {
-                "name": "Meera",
-                "image": "1",
-                "text": "this is a testweshdghfhouwh3"
-            }
-        ]
+         "asset_id": 3
     },
     {
-        "gameType": "B",
+        "gameType": "variant_2",
         "visibilityState": "WithoutBottomLayer",
-        "evaluationLogic": "B",
-        "components": 8,
+        "components": 4,
+         "asset_id": 2
+    },
+    {
+        "gameType": "variant_3",
+        "visibilityState": "WithoutBottomLayer",
+        "components": 5,
         "rows": 2,
-        "columns": 4
+        "columns": 4,
+        "asset_id": 4},
+    {
+        "gameType": "variant_2",
+        "visibilityState": "WithoutBottomLayer",
+        "components": 4,
+        "asset_id": 7
     },
     {
-        "gameType": "C",
+        "gameType": "variant_4",
         "visibilityState": "WithBottomLayer",
-        "evaluationLogic": "B",
-        "components": 3,
-        "slots": 3
+        "components": 6,
+        "slots": 6,
+        "asset_id": 8
+    },
+    {"9":1,  "asset_id": 9},
+    {"10":1,  "asset_id": 10},
+    {
+        "gameType": "variant_1",
+        "visibilityState": "WithBottomLayer",
+        "components": 2,
+        "slots": 2,
+        "asset_id": 5
     },
     {
-        "gameType": "D",
+        "gameType": "variant_4",
         "visibilityState": "WithBottomLayer",
-        "evaluationLogic": "B",
-        "components": 3,
-        "slots": 3
+        "components": 4,
+        "slots": 4,
+        "asset_id": 12
     }
+    
+    
 ]
