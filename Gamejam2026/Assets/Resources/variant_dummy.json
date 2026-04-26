@@ -97,7 +97,7 @@
     },
     {
         "gameType": "variant_2",
-        "visibilityState": "WithBottomLayer",
+        "visibilityState": "WithoutBottomLayer",
         "components": 3,
         "slots": 3,
         "asset_id": 5,
