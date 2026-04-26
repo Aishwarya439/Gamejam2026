@@ -14,7 +14,7 @@ public class bottomLayer : MonoBehaviour
         rectTransform = GetComponent<RectTransform>();
     }
 
-    public void Populate(int slotCount, GameObject slotPrefab, Sprite slotSprite)
+    public void Populate(int slotCount, GameObject slotPrefab, Sprite bgSprite, Sprite frameSprite)
     {
         foreach (Transform child in transform)
             Destroy(child.gameObject);
@@ -43,7 +43,7 @@ public class bottomLayer : MonoBehaviour
             rect.anchoredPosition = new Vector2(startX + i * (slotWidth + GAP), 0f);
 
             bottomLayerContainer container = instance.GetComponent<bottomLayerContainer>();
-            container.Setup(i + 1, slotSprite);
+            container.Setup(i + 1, bgSprite, frameSprite, slotWidth, slotHeight);
             slots.Add(container);
         }
 
@@ -52,7 +52,7 @@ public class bottomLayer : MonoBehaviour
             slots[0].Unlock();
     }
 
-    public void PopulateAllUnlocked(int slotCount, GameObject slotPrefab, Sprite slotSprite)
+    public void PopulateAllUnlocked(int slotCount, GameObject slotPrefab, Sprite bgSprite, Sprite frameSprite)
     {
         foreach (Transform child in transform)
             Destroy(child.gameObject);
@@ -92,16 +92,16 @@ public class bottomLayer : MonoBehaviour
             rect.anchoredPosition = new Vector2(startX + i * (slotWidth + GAP), 0f);
 
             bottomLayerContainer container = instance.GetComponent<bottomLayerContainer>();
-            container.Setup(i + 1, slotSprite);
+            container.Setup(i + 1, bgSprite, frameSprite, slotWidth, slotHeight);
             container.Unlock();
             slots.Add(container);
         }
 
         // Calculate actual rendered sprite width inside slot rect (preserveAspect shrinks it)
         float spriteRenderedWidth = slotWidth;
-        if (slotSprite != null)
+        if (bgSprite != null)
         {
-            float spriteAspect = slotSprite.rect.width / slotSprite.rect.height;
+            float spriteAspect = bgSprite.rect.width / bgSprite.rect.height;
             float rectAspect = slotWidth / slotHeight;
             if (spriteAspect < rectAspect)
                 spriteRenderedWidth = slotHeight * spriteAspect;

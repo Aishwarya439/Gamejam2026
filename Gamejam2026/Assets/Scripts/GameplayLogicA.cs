@@ -39,8 +39,9 @@ public class GameplayLogicA : IGameplayLogic
         }
 
         bottomLayerComponent = bottomLayerGo.GetComponent<bottomLayer>();
-        Sprite slotSprite = System.Array.Find(Resources.LoadAll<Sprite>("Art/temp"), s => s.name == "temp_30");
-        bottomLayerComponent.Populate(slotCount, controller.BottomLayerContainerPrefab, slotSprite);
+        Sprite bgSprite = Resources.Load<Sprite>("Art/blc_1_bg");
+        Sprite frameSprite = Resources.Load<Sprite>("Art/blc_1_frame");
+        bottomLayerComponent.Populate(slotCount, controller.BottomLayerContainerPrefab, bgSprite, frameSprite);
     }
 
     private void SetupDummyLayers(GameSceneController gsc)
@@ -103,7 +104,8 @@ public class GameplayLogicA : IGameplayLogic
     {
         if (droppedOn == null) return false;
 
-        bottomLayerContainer slot = droppedOn.GetComponent<bottomLayerContainer>();
+        bottomLayerContainer slot = droppedOn.GetComponent<bottomLayerContainer>()
+            ?? droppedOn.GetComponentInParent<bottomLayerContainer>();
         if (slot == null || !slot.IsUnlocked) return false;
         if (slot.SlotIndex != index) return false;
 

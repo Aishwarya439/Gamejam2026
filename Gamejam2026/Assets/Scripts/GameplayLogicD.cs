@@ -10,6 +10,7 @@ public class GameplayLogicD : IGameplayLogic
     private readonly int slotCount;
 
     private bottomLayer bottomLayerComponent;
+    private UnityEngine.UI.Image mainBgImage;
 
     // slot index → (item index, draggable reference)
     private Dictionary<int, (int itemIndex, DraggableItem draggable)> placedItems
@@ -35,15 +36,21 @@ public class GameplayLogicD : IGameplayLogic
         }
 
         bottomLayerComponent = bottomLayerGo.GetComponent<bottomLayer>();
-        Sprite slotSprite = System.Array.Find(Resources.LoadAll<Sprite>("Art/temp"), s => s.name == "temp_56");
-        bottomLayerComponent.PopulateAllUnlocked(slotCount, controller.BottomLayerContainerPrefab, slotSprite);
+        Sprite bgSprite = Resources.Load<Sprite>("Art/blc_4_bg");
+        Sprite frameSprite = Resources.Load<Sprite>("Art/blc_4_frame");
+        bottomLayerComponent.PopulateAllUnlocked(slotCount, controller.BottomLayerContainerPrefab, bgSprite, frameSprite);
+
+        GameObject mainBgGo = GameObject.Find("mainBg");
+        if (mainBgGo != null)
+            mainBgImage = mainBgGo.GetComponent<UnityEngine.UI.Image>();
     }
 
     public bool OnDrop(int index, GameObject droppedOn, DraggableItem draggable)
     {
         if (droppedOn == null) return false;
 
-        bottomLayerContainer slot = droppedOn.GetComponent<bottomLayerContainer>();
+        bottomLayerContainer slot = droppedOn.GetComponent<bottomLayerContainer>()
+            ?? droppedOn.GetComponentInParent<bottomLayerContainer>();
         if (slot == null || !slot.IsUnlocked || slot.IsOccupied) return false;
 
         string path = $"Art/level_{assetId}/components/step_{index}";
@@ -75,6 +82,11 @@ public class GameplayLogicD : IGameplayLogic
             return;
         }
 
+        // Show incorrect feedback
+        Sprite incorrectSprite = Resources.Load<Sprite>($"Art/level_{assetId}/incorrectFeedback");
+        if (incorrectSprite != null && mainBgImage != null)
+            mainBgImage.sprite = incorrectSprite;
+
         List<int> toRevert = new List<int>();
         foreach (var kvp in placedItems)
         {
@@ -84,6 +96,11 @@ public class GameplayLogicD : IGameplayLogic
 
         controller.ShakeAndReset(() =>
         {
+            // Revert mainBg to start
+            Sprite startSprite = Resources.Load<Sprite>($"Art/level_{assetId}/start");
+            if (startSprite != null && mainBgImage != null)
+                mainBgImage.sprite = startSprite;
+
             HashSet<componentContainer> containersToRefresh = new HashSet<componentContainer>();
 
             foreach (int slotIdx in toRevert)
@@ -108,6 +125,10 @@ public class GameplayLogicD : IGameplayLogic
 
     public void OnEnd()
     {
+        Sprite correctSprite = Resources.Load<Sprite>($"Art/level_{assetId}/correctFeedback");
+        if (correctSprite != null && mainBgImage != null)
+            mainBgImage.sprite = correctSprite;
+
         controller.NotifyLevelComplete();
     }
 }

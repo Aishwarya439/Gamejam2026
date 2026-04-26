@@ -6,8 +6,20 @@
         "slots": 4,
         "asset_id": 1
     },
-    {"6":1, "asset_id": 6},
-    {"11":1, "asset_id": 11},
+    {
+        "gameType": "variant_3",
+        "visibilityState": "WithoutBottomLayer",
+        "components": 6,
+        "rows": 2,
+        "columns": 3,
+        "asset_id": 6
+    },
+    {
+        "gameType": "variant_2",
+        "visibilityState": "WithoutBottomLayer",
+        "components": 4,
+        "asset_id": 11
+    },
     {
         "gameType": "variant_2",
         "visibilityState": "WithoutBottomLayer",
@@ -23,10 +35,11 @@
     {
         "gameType": "variant_3",
         "visibilityState": "WithoutBottomLayer",
-        "components": 5,
+        "components": 6,
         "rows": 2,
-        "columns": 4,
-        "asset_id": 4},
+        "columns": 3,
+        "asset_id": 4
+    },
     {
         "gameType": "variant_2",
         "visibilityState": "WithoutBottomLayer",
@@ -36,12 +49,26 @@
     {
         "gameType": "variant_4",
         "visibilityState": "WithBottomLayer",
-        "components": 6,
-        "slots": 6,
+        "components": 5,
+        "slots": 5,
         "asset_id": 8
     },
-    {"9":1,  "asset_id": 9},
-    {"10":1,  "asset_id": 10},
+    {
+        "gameType": "variant_3",
+        "visibilityState": "WithoutBottomLayer",
+        "components": 6,
+        "rows": 2,
+        "columns": 3,
+        "asset_id": 9
+    },
+    {
+        "gameType": "variant_3",
+        "visibilityState": "WithoutBottomLayer",
+        "components": 6,
+        "rows": 2,
+        "columns": 3,
+        "asset_id": 10
+    },
     {
         "gameType": "variant_1",
         "visibilityState": "WithBottomLayer",
