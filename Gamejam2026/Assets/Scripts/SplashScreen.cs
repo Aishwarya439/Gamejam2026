@@ -40,7 +40,8 @@ public class SplashScreen : MonoBehaviour
             }
         }
         
-        dialogueManager.Init("SplashScene");
+        if (dialogueManager != null)
+            dialogueManager.Init("SplashScene");
     }
 
     private void Start()

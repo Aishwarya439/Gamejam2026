@@ -17,5 +17,11 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/LobbyScene.unity
     guid: cfe8014ade7e9429bb61ff10dff68bbb
+  - enabled: 1
+    path: Assets/Scenes/DialogueScene.unity
+    guid: 1ce9e0cfe41c04aca8fb2034ac52dec5
+  - enabled: 1
+    path: Assets/Scenes/CreditsScene.unity
+    guid: b13665d4747e34fc786c6c3066cbc85e
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}

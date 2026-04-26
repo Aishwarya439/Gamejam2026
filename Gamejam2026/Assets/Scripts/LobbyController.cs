@@ -12,7 +12,7 @@ public class LobbyController : MonoBehaviour
     [SerializeField] private GameObject bookGameObject;
     [SerializeField] private GameObject startButton;
     
-    private static List<int> panelOrder = new () { 1, 2, 4, 6, 11, 5, 7, 8, 9, 10, 3, 12 };
+    private static List<int> panelOrder = new () { 1, 5, 4, 6, 11, 2, 7, 8, 9, 10, 3, 12 };
     
     void Start()
     {

@@ -2,8 +2,8 @@
     {
         "gameType": "variant_1",
         "visibilityState": "WithBottomLayer",
-        "components": 4,
-        "slots": 4,
+        "components": 3,
+        "slots": 3,
         "asset_id": 1
     },
     {
@@ -87,10 +87,10 @@
         "asset_id": 10
     },
     {
-        "gameType": "variant_1",
+        "gameType": "variant_2",
         "visibilityState": "WithBottomLayer",
-        "components": 2,
-        "slots": 2,
+        "components": 3,
+        "slots": 3,
         "asset_id": 5,
         "dialogue": [
             {
@@ -108,8 +108,8 @@
     {
         "gameType": "variant_4",
         "visibilityState": "WithBottomLayer",
-        "components": 4,
-        "slots": 4,
+        "components": 8,
+        "slots": 8,
         "asset_id": 12
     }
 ]

@@ -142,7 +142,7 @@ public class MainController : MonoBehaviour
 
         if (scene.name == "DialogueScene")
         {
-            StartCoroutine(InitDialogueNextFrame(CompletionIndex));
+            StartCoroutine(InitDialogueNextFrame(selectedConfigIndex));
             return;
         }
 
