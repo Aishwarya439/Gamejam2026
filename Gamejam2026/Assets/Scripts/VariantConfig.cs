@@ -25,6 +25,7 @@ public class VariantConfig
     public int columns;
     public int slots;
     public int asset_id;
+    public string messageText;
     public DialogueEntry[] dialogue;
 
     public VisibilityState VisibilityState =>

@@ -4,7 +4,8 @@
         "visibilityState": "WithBottomLayer",
         "components": 3,
         "slots": 3,
-        "asset_id": 1
+        "asset_id": 1,
+        "messageText": "I vaguely remember cleaning today.\nDrag and arrange the chores in the correct order."
     },
     {
         "gameType": "variant_3",

@@ -23,6 +23,7 @@ public class GameSceneController : MonoBehaviour
     [SerializeField] private GameObject componentLayerContainerPrefab;
     [SerializeField] private GameObject bottomLayerContainerPrefab;
     [SerializeField] private GameObject dummyMainBgPrefab;
+    [SerializeField] private GameObject headerGameObject;
 
     public GameObject BottomLayerContainerPrefab => bottomLayerContainerPrefab;
     public GameObject DummyMainBgPrefab => dummyMainBgPrefab;
@@ -99,6 +100,12 @@ public class GameSceneController : MonoBehaviour
         }
 
         bottomLayer.SetActive(config.VisibilityState == VisibilityState.WithBottomLayer);
+        
+        if (!string.IsNullOrEmpty(config.messageText))
+        {
+            headerGameObject.SetActive(true);
+            headerGameObject.GetComponent<Headerztext>().Init(config.messageText);
+        }
 
         GameObject dummyMainBg = GameObject.Find("dummyMainBg");
         if (dummyMainBg != null)
