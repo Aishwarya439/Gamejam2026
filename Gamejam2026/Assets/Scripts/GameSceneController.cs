@@ -117,6 +117,10 @@ public class GameSceneController : MonoBehaviour
             headerGameObject.SetActive(true);
             headerGameObject.GetComponent<Headerztext>().Init(config.messageText);
         }
+        else
+        {
+            headerGameObject.SetActive(false);
+        }
 
         GameObject dummyMainBg = GameObject.Find("dummyMainBg");
         if (dummyMainBg != null)

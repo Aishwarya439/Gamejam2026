@@ -13,7 +13,8 @@
         "components": 6,
         "rows": 2,
         "columns": 3,
-        "asset_id": 6
+        "asset_id": 6,
+        "messageText": "Booring. But he's cute, my husband. \nComplete the puzzle to know how it went. "
     },
     {
         "gameType": "variant_2",
@@ -25,13 +26,15 @@
         "gameType": "variant_2",
         "visibilityState": "WithoutBottomLayer",
         "components": 6,
-         "asset_id": 3
+         "asset_id": 3,
+        "messageText": "Nothing like lamb curry on a useless day."
     },
     {
         "gameType": "variant_2",
         "visibilityState": "WithoutBottomLayer",
         "components": 4,
-         "asset_id": 2
+         "asset_id": 2,
+        "messageText": "Ah, the beauty routine. I'm such a catch.\nDrag the skin care step to Godavari's face."
     },
     {
         "gameType": "variant_3",
@@ -39,13 +42,15 @@
         "components": 6,
         "rows": 2,
         "columns": 3,
-        "asset_id": 4
+        "asset_id": 4,
+        "messageText": "The grocer is kinda cute....and rich.\n    Drag and drop the pieces into the puzzle to go shopping."
     },
     {
         "gameType": "variant_2",
         "visibilityState": "WithoutBottomLayer",
         "components": 4,
-        "asset_id": 7
+        "asset_id": 7,
+        "messageText": "Wait, what! He's gone! Noooooooo!\nDrag and drop emotions on Godavari to make her feel something."
     },
     {
         "gameType": "variant_4",
@@ -53,19 +58,20 @@
         "components": 5,
         "slots": 5,
         "asset_id": 8,
+        "messageText": "Police want to know what happened. \nDrag the events into the correct order and be a witness.",
         "dialogue": [
             {
-                "name": "Meera",
+                "name": "Godavari",
                 "image": "",
                 "text": "I like it when my days are dull. Because my mind never is.\nHe had it coming, but those poor cops make my heart swell."
             },
             {
-                "name": "Meera",
+                "name": "Godavari",
                 "image": "",
-                "text": "Maybe they will learn someday. That I’m no simple snack.\nI am woman with good plans and the best of bloody intentions."
+                "text": "Maybe they will learn someday, that I’m no simple snack.\nI am a woman with good plans and the best of bloody intentions."
             },
             {
-                "name": "Meera",
+                "name": "Godavari",
                 "image": "",
                 "text": "It's been good, while it lasted.\nSee you next page."
             }
@@ -77,7 +83,8 @@
         "components": 6,
         "rows": 2,
         "columns": 3,
-        "asset_id": 9
+        "asset_id": 9,
+        "messageText": "Gotta play cool. \nComplete the puzzle to know how it went."
     },
     {
         "gameType": "variant_3",
@@ -85,7 +92,8 @@
         "components": 6,
         "rows": 2,
         "columns": 3,
-        "asset_id": 10
+        "asset_id": 10,
+        "messageText": "But then I played it cool, too long. \nComplete the puzzle to know why I did what I did."
     },
     {
         "gameType": "variant_2",
@@ -93,14 +101,15 @@
         "components": 3,
         "slots": 3,
         "asset_id": 5,
+        "messageText": "Phew! What a day! But wait a minute...",
         "dialogue": [
             {
-                "name": "Meera",
+                "name": "Godavari",
                 "image": "",
                 "text": "Ugh. Can’t a girl just have a day.\nNow I have to take matters into my freshly manicured hands."
             },
             {
-                "name": "Meera",
+                "name": "Godavari",
                 "image": "",
                 "text": "Sigh, I just got them done."
             }
@@ -111,6 +120,7 @@
         "visibilityState": "WithBottomLayer",
         "components": 8,
         "slots": 8,
-        "asset_id": 12
+        "asset_id": 12,
+        "messageText": "Want to know what really happened? \nDrag the events into the correct order and know the real Godavari."
     }
 ]

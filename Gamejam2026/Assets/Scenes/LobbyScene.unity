@@ -632,9 +632,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 'Anti-Hero
-
-    <size=72>(Rasode Me Kaun Tha?)'
+  m_text: Lamb of Godavari
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 515c89d0082744dbf9b03e99e1a9d4c5, type: 2}
   m_sharedMaterial: {fileID: 3030758926127982653, guid: 515c89d0082744dbf9b03e99e1a9d4c5, type: 2}
