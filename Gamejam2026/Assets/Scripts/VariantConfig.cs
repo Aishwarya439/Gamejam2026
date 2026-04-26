@@ -26,6 +26,7 @@ public class VariantConfig
     public int slots;
     public int asset_id;
     public string messageText;
+    public float sfxVolume = 1f;
     public DialogueEntry[] dialogue;
 
     public VisibilityState VisibilityState =>

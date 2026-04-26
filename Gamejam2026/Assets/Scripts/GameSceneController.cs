@@ -138,6 +138,8 @@ public class GameSceneController : MonoBehaviour
         SplitAndPopulate(config.components, configIndex, config.asset_id);
 
         Debug.Log($"[GameScene] GameType: {config.gameType} | Visibility: {config.VisibilityState} | Logic: {config.EvaluationLogic}");
+
+        PlaySceneAudio(config);
     }
 
     private void SetMainBgSprite(int assetId)
@@ -299,6 +301,47 @@ public class GameSceneController : MonoBehaviour
         }
 
         onComplete?.Invoke();
+    }
+
+    public void PlayHitSFX(int placementCount)
+    {
+        if (pendingConfig.asset_id != 11) return;
+        int index = Mathf.Clamp(placementCount, 1, 4);
+        AudioManager.Instance.PlaySFX($"punch_{index}");
+    }
+
+    public void PlayMissSFX()
+    {
+        if (pendingConfig.asset_id != 11) return;
+        AudioManager.Instance.PlaySFX("punchWrong");
+    }
+
+    private void PlaySceneAudio(VariantConfig config)
+    {
+        int id = config.asset_id;
+
+        string loopClip = null;
+        if (id >= 1 && id <= 5)      loopClip = "game_start_a";
+        else if (id >= 6 && id <= 8) loopClip = "game_start_c";
+        else if (id == 11)           loopClip = "scene_11_loop";
+
+        if (loopClip != null)
+            AudioManager.Instance.PlayBGM(loopClip);
+
+        string oneShotClip = id switch
+        {
+            6 => "scene_6_start",
+            8 => "scene_8_start",
+            _ => null
+        };
+
+        if (oneShotClip != null)
+            AudioManager.Instance.PlaySFX(oneShotClip);
+    }
+
+    private void OnDestroy()
+    {
+        AudioManager.Instance?.PlayBGM("MainTheme");
     }
 
     private IGameplayLogic CreateLogic(VariantConfig config)

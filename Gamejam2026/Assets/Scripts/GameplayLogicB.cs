@@ -27,10 +27,16 @@ public class GameplayLogicB : IGameplayLogic
     public bool OnDrop(int index, GameObject droppedOn, DraggableItem draggable)
     {
         if (droppedOn == null || droppedOn.name != "mainBg")
+        {
+            controller.PlayMissSFX();
             return false;
+        }
 
         if (index != nextExpectedIndex)
+        {
+            controller.PlayMissSFX();
             return false;
+        }
 
         string path = $"Art/level_{assetId}/steps/step_{index}";
         Sprite sprite = Resources.Load<Sprite>(path);
@@ -40,6 +46,7 @@ public class GameplayLogicB : IGameplayLogic
             Debug.LogWarning($"[GameplayLogicB] Sprite not found at: Resources/{path}");
 
         nextExpectedIndex++;
+        controller.PlayHitSFX(nextExpectedIndex - 1);
 
         if (nextExpectedIndex > totalComponents)
             OnEnd();
