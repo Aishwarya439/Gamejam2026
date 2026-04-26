@@ -55,5 +55,9 @@ public class SplashScreen : MonoBehaviour
 
         // UnityEngine.SceneManagement.SceneManager.LoadScene(
         //     UnityEngine.SceneManagement.SceneManager.GetActiveScene().buildIndex + 1);
+
+        // int debugConfigIndex = 0; // change this to test different variants
+        // mainControllerInstance.GetComponent<MainController>().SetConfigIndex(debugConfigIndex);
+        // mainControllerInstance.GetComponent<MainController>().LoadGameScene();
     }
 }

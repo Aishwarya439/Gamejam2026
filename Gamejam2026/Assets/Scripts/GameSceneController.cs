@@ -33,6 +33,7 @@ public class GameSceneController : MonoBehaviour
     private VariantConfig pendingConfig;
     private int pendingConfigIndex;
     private IGameplayLogic activeLogic;
+    private bool variantApplied = false;
 
     private void Awake()
     {
@@ -51,7 +52,7 @@ public class GameSceneController : MonoBehaviour
 
     private void Start()
     {
-        if (pendingConfig != null)
+        if (pendingConfig != null && !variantApplied)
             ApplyVariantInternal(pendingConfig, pendingConfigIndex);
     }
 
@@ -93,6 +94,7 @@ public class GameSceneController : MonoBehaviour
 
     private void ApplyVariantInternal(VariantConfig config, int configIndex)
     {
+        variantApplied = true;
         if (bottomLayer == null || leftComponentContainer == null || rightComponentContainer == null)
         {
             Debug.LogError("GameSceneController: missing scene references!");
@@ -134,7 +136,10 @@ public class GameSceneController : MonoBehaviour
         Sprite sprite = Resources.Load<Sprite>(path);
         if (sprite != null)
         {
-            mainBgGo.GetComponent<UnityEngine.UI.Image>().sprite = sprite;
+            var img = mainBgGo.GetComponent<UnityEngine.UI.Image>();
+            img.sprite = sprite;
+            img.color = Color.white;
+            img.preserveAspect = true;
             Debug.Log($"[GameScene] mainBg set to: Resources/{path}");
         }
         else

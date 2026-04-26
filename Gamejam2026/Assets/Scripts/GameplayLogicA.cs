@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using DG.Tweening;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -11,7 +12,7 @@ public class GameplayLogicA : IGameplayLogic
     private readonly int slotCount;
 
     private bottomLayer bottomLayerComponent;
-    private Dictionary<int, GameObject> dummyLayers = new Dictionary<int, GameObject>();
+    private Dictionary<int, Image> stepLayers = new Dictionary<int, Image>();
 
     public GameplayLogicA(int slotCount)
     {
@@ -25,11 +26,11 @@ public class GameplayLogicA : IGameplayLogic
         this.assetId = assetId;
         this.totalComponents = totalComponents;
 
-        SetupBottomLayer(controller);
-        SetupDummyLayers(controller);
+        SetupBottomLayer();
+        SetupDummyLayers();
     }
 
-    private void SetupBottomLayer(GameSceneController gsc)
+    private void SetupBottomLayer()
     {
         GameObject bottomLayerGo = GameObject.Find("bottomLayer");
         if (bottomLayerGo == null)
@@ -44,40 +45,59 @@ public class GameplayLogicA : IGameplayLogic
         bottomLayerComponent.Populate(slotCount, controller.BottomLayerContainerPrefab, bgSprite, frameSprite);
     }
 
-    private void SetupDummyLayers(GameSceneController gsc)
+    private void SetupDummyLayers()
     {
         GameObject mainBgGo = GameObject.Find("mainBg");
         if (mainBgGo == null) return;
 
+        // Set mainBg image to start.png (bottom-most layer, never removed)
         string startPath = $"Art/level_{assetId}/start";
         Sprite startSprite = Resources.Load<Sprite>(startPath);
         Image mainBgImage = mainBgGo.GetComponent<Image>();
         if (mainBgImage != null && startSprite != null)
+        {
             mainBgImage.sprite = startSprite;
+            mainBgImage.color = Color.white;
+            mainBgImage.preserveAspect = true;
+        }
         else
             Debug.LogWarning($"[GameplayLogicA] start sprite not found at: Resources/{startPath}");
 
-        GameObject prefab = gsc.DummyMainBgPrefab;
+        GameObject prefab = controller.DummyMainBgPrefab;
         if (prefab == null)
         {
             Debug.LogError("[GameplayLogicA] dummyMainBgPrefab not assigned!");
             return;
         }
 
-        GameObject existingDummy = GameObject.Find("dummyMainBg");
-        if (existingDummy != null)
-        {
-            string path1 = $"Art/level_{assetId}/steps/step_1";
-            Sprite sprite1 = Resources.Load<Sprite>(path1);
-            Image img1 = existingDummy.GetComponent<Image>();
-            if (img1 != null && sprite1 != null)
-                img1.sprite = sprite1;
-            dummyLayers[1] = existingDummy;
-        }
+        // The existing dummyMainBg in the scene counts as one slot — use it for step_N (bottom of stack)
+        // Then instantiate step_(N-1) ... step_1 on top, so step_1 is the topmost (last sibling)
+        // Render order under mainBg: start(mainBg) -> step_N -> step_(N-1) -> ... -> step_1
 
         Canvas.ForceUpdateCanvases();
 
-        for (int i = totalComponents; i >= 2; i--)
+        GameObject existingDummy = GameObject.Find("dummyMainBg");
+
+        // Assign step_N to the existing dummy (it will be the lowest step layer)
+        if (existingDummy != null)
+        {
+            string path = $"Art/level_{assetId}/steps/step_{totalComponents}";
+            Sprite sprite = Resources.Load<Sprite>(path);
+            Image img = existingDummy.GetComponent<Image>();
+            if (img != null && sprite != null)
+            {
+                img.sprite = sprite;
+                img.color = Color.white;
+            }
+            else
+                Debug.LogWarning($"[GameplayLogicA] Sprite not found at: Resources/{path}");
+
+            existingDummy.transform.SetAsLastSibling();
+            stepLayers[totalComponents] = img;
+        }
+
+        // Instantiate step_(N-1) down to step_1, each added as last sibling so step_1 ends up on top
+        for (int i = totalComponents - 1; i >= 1; i--)
         {
             GameObject dummy = GameObject.Instantiate(prefab, mainBgGo.transform);
             dummy.name = $"dummyMainBg_{i}";
@@ -92,11 +112,14 @@ public class GameplayLogicA : IGameplayLogic
             Sprite sprite = Resources.Load<Sprite>(path);
             Image img = dummy.GetComponent<Image>();
             if (img != null && sprite != null)
+            {
                 img.sprite = sprite;
+                img.color = Color.white;
+            }
             else
                 Debug.LogWarning($"[GameplayLogicA] Sprite not found at: Resources/{path}");
 
-            dummyLayers[i] = dummy;
+            stepLayers[i] = img;
         }
     }
 
@@ -116,10 +139,15 @@ public class GameplayLogicA : IGameplayLogic
         else
             Debug.LogWarning($"[GameplayLogicA] Sprite not found at: Resources/{path}");
 
-        if (dummyLayers.TryGetValue(index, out GameObject dummy))
+        // Fade out the corresponding step layer
+        if (stepLayers.TryGetValue(index, out Image layerImage) && layerImage != null)
         {
-            GameObject.Destroy(dummy);
-            dummyLayers.Remove(index);
+            layerImage.DOFade(0f, 0.5f).OnComplete(() =>
+            {
+                if (layerImage != null)
+                    GameObject.Destroy(layerImage.gameObject);
+            });
+            stepLayers.Remove(index);
         }
 
         bottomLayerComponent.UnlockNext(index);
