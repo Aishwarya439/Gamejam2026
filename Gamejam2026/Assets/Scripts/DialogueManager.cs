@@ -35,7 +35,7 @@ public class DialogueManager : MonoBehaviour
     [SerializeField] private GameObject dialogueCanvas;
 
     [Header("Typewriter Settings")]
-    [SerializeField] private float typeSpeed = 0.03f;
+    private float typeSpeed = 0.06f;
 
     private List<DialogueEntry> dialogues = new List<DialogueEntry>();
     private int currentIndex = 0;
@@ -149,8 +149,8 @@ public class DialogueManager : MonoBehaviour
             nameText.text = entry.name ?? "";
         }
 
-        // Load background from Resources
-        if (backgroundImage != null && !string.IsNullOrEmpty(entry.image))
+        // Load background from Resources (SplashScene only)
+        if (isSplashDialogue && backgroundImage != null && !string.IsNullOrEmpty(entry.image))
         {
             string bgPath = CombinePath(rootFolder, imagesSubfolder, entry.image);
             Sprite bgSprite = Resources.Load<Sprite>(bgPath);
@@ -197,7 +197,7 @@ public class DialogueManager : MonoBehaviour
 
         if (active)
         {
-            nextButton.transform.DOScale(1.08f, 1f).SetLoops(-1, LoopType.Yoyo).SetEase(Ease.InOutSine);
+            nextButton.transform.DOScale(1.08f, 1f).SetLoops(-1, LoopType.Yoyo).SetEase(Ease.InOutSine).SetLink(nextButton.gameObject);
         }
         else
         {

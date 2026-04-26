@@ -12,7 +12,7 @@ public class LobbyController : MonoBehaviour
     [SerializeField] private GameObject bookGameObject;
     [SerializeField] private GameObject startButton;
     
-    private static List<int> panelOrder = new () { 1, 5, 4, 6, 11, 2, 7, 8, 9, 10, 3, 12 };
+    private static List<int> panelOrder = new () { 1, 2, 4, 6, 11, 5, 7, 8, 9, 10, 3, 12 };
     
     void Start()
     {
@@ -22,7 +22,7 @@ public class LobbyController : MonoBehaviour
 
         if (isFirstVisit)
         {
-            startButton.transform.DOScale(1.08f, 1f).SetLoops(-1, LoopType.Yoyo).SetEase(Ease.InOutSine);
+            startButton.transform.DOScale(1.08f, 1f).SetLoops(-1, LoopType.Yoyo).SetEase(Ease.InOutSine).SetLink(startButton);
         }
         else
         {
@@ -75,7 +75,10 @@ public class LobbyController : MonoBehaviour
             {
                 GameObject panel = panels[panelIndex];
                 panel.SetActive(true);
-                panel.GetComponent<Image>().color = new Color(1f, 1f, 1f, 1f);
+                Image img = panel.GetComponent<Image>();
+                Image childImg = panel.GetComponentInChildren<Image>();
+                img.color = new Color(img.color.r, img.color.g, img.color.b, 1f);
+                childImg.color = new Color(childImg.color.r, childImg.color.g, childImg.color.b, 1f);
             }
         }
 
@@ -90,8 +93,11 @@ public class LobbyController : MonoBehaviour
                 panel.SetActive(true);
 
                 Image img = panel.GetComponent<Image>();
-                img.color = new Color(1f, 1f, 1f, 0f);
+                Image graphicImg = panel.GetComponentInChildren<Image>();
+                //img.color = new Color(1f, 1f, 1f, 0f);
+                //graphicImg.color = new Color(1f, 1f, 1f, 0f);
                 img.DOFade(1f, 1f).SetEase(Ease.OutCubic);
+                graphicImg.DOFade(1f, 1f).SetEase(Ease.OutCubic);
 
                 yield return new WaitForSeconds(revealDelay);
 
@@ -99,7 +105,7 @@ public class LobbyController : MonoBehaviour
                 if (btn != null)
                     btn.interactable = true;
 
-                panel.transform.DOScale(1.08f, 1f).SetLoops(-1, LoopType.Yoyo).SetEase(Ease.InOutSine);
+                panel.transform.DOScale(1.08f, 1f).SetLoops(-1, LoopType.Yoyo).SetEase(Ease.InOutSine).SetLink(panel);
             }
         }
         else

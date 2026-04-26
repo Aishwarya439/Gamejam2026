@@ -51,7 +51,24 @@
         "visibilityState": "WithBottomLayer",
         "components": 5,
         "slots": 5,
-        "asset_id": 8
+        "asset_id": 8,
+        "dialogue": [
+            {
+                "name": "Meera",
+                "image": "",
+                "text": "I like it when my days are dull. Because my mind never is.\nHe had it coming, but those poor cops make my heart swell."
+            },
+            {
+                "name": "Meera",
+                "image": "",
+                "text": "Maybe they will learn someday. That I’m no simple snack.\nI am woman with good plans and the best of bloody intentions."
+            },
+            {
+                "name": "Meera",
+                "image": "",
+                "text": "It's been good, while it lasted.\nSee you next page."
+            }
+        ]
     },
     {
         "gameType": "variant_3",
@@ -74,7 +91,19 @@
         "visibilityState": "WithBottomLayer",
         "components": 2,
         "slots": 2,
-        "asset_id": 5
+        "asset_id": 5,
+        "dialogue": [
+            {
+                "name": "Meera",
+                "image": "",
+                "text": "Ugh. Can’t a girl just have a day.\nNow I have to take matters into my freshly manicured hands."
+            },
+            {
+                "name": "Meera",
+                "image": "",
+                "text": "Sigh, I just got them done."
+            }
+        ]
     },
     {
         "gameType": "variant_4",
@@ -83,6 +112,4 @@
         "slots": 4,
         "asset_id": 12
     }
-    
-    
 ]

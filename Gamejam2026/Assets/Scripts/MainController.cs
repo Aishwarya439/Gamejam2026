@@ -111,6 +111,17 @@ public class MainController : MonoBehaviour
         FadeAndLoad("DialogueScene");
     }
 
+    private IEnumerator InitDialogueNextFrame(int index)
+    {
+        DialogueManager dm = null;
+        while (dm == null)
+        {
+            dm = FindFirstObjectByType<DialogueManager>(FindObjectsInactive.Include);
+            yield return null;
+        }
+        dm.Init(index);
+    }
+
     private void FadeAndLoad(string sceneName)
     {
         overlay.DOKill();
@@ -131,8 +142,7 @@ public class MainController : MonoBehaviour
 
         if (scene.name == "DialogueScene")
         {
-            DialogueManager dm = FindFirstObjectByType<DialogueManager>();
-            dm?.Init(CompletionIndex);
+            StartCoroutine(InitDialogueNextFrame(CompletionIndex));
             return;
         }
 
